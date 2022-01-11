@@ -1,10 +1,53 @@
 # Schema for Song Play Analysis 
-## Jesse Tweedle // jesse.tweedle@gmail.com
+
+Notes:
 
 0. The readme file includes a summary of the project, how to run the python scripts, and an explanation of the files in the repository. Comments are used effectively and each function has a docstring.
 1. Discuss the purpose of this database in the context of the startup, Sparkify, and their analytical goals.
 2. State and justify your database schema design and ETL pipeline.
 3. Provide example queries and results for song play analysis.
+
+This is python/sql code for a data pipeline that creates analytical database for song play analysis at Sparkify. Given data on songs and data on song plays logged from the service, this constructs a postgresql database with schema optimized for song play analysis.
+
+## Setup
+
+### Prerequisites
+
+Postgresql, with default database studentdb, with user student / password student. Python 3. 
+
+### Clone
+
+git clone, environment, pip install from requirements.txt.
+
+### Run
+then create_tables.py, then etl.py.
+
+## Organization
+
+Queries in sql_queries.py, database creation / connection in create_tables.py.  data in data/
+
+## Data
+
+song data in. structure is...etc.
+
+log data in: etc.
+
+## Schema
+
+Put schema in here.
+
+## Example queries
+
+Top 50 songs by number of plays:
+```
+SELECT COUNT(*) AS total_plays, songs.title, artists.name
+FROM songplays
+INNER JOIN songs ON songplays.song_id = songs.song_id
+INNER JOIN artists ON songplays.artist_id = artists.artist_id
+GROUP BY song_id
+ORDER BY total_plays DESC
+LIMIT 50
+```
 
 ## 1.
 
