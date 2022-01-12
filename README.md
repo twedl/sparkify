@@ -15,7 +15,7 @@ This repo has python code and sql queries for a data pipeline that creates analy
 
 ### Prerequisites
 
-PostgreSQL (tested on version 14.1 on MacOS 12.1), with default database studentdb, with user student / password student. To create this default, run:
+PostgreSQL (tested on version 14.1 on MacOS 12.1), with default database studentdb, with user student / password student. To create this default, run this in your terminal:
 
 ```
 createdb --host=127.0.0.1 --username=student --password studentdb
@@ -27,8 +27,6 @@ psql --host=127.0.0.1 --dbname=student --username=student --password
 and type `student` in the password prompt again. You should see a message like `You are now connected to database "studentdb" as user "student" on host "127.0.0.1" at post "5432"`.
 
 ### Install
-
-git clone, environment, pip install from requirements.txt.
 
 To set up the scripts, first clone the git repo:
 ```
@@ -62,11 +60,49 @@ After running this, the `sparkifydb` database should exist with tables `songplay
 psql --host=127.0.0.1 --dbname=sparkifydb --username=student --password
 ```
 
-## Data
+## Input Data
 
-song data in. structure is...etc.
+Song data:
+```
+> gunzip -c data/song_data/A/A/A/TRAAAAW128F429D538.json.gz | jq .
+{
+  "num_songs": 1,
+  "artist_id": "ARD7TVE1187B99BFB1",
+  "artist_latitude": null,
+  "artist_longitude": null,
+  "artist_location": "California - LA",
+  "artist_name": "Casual",
+  "song_id": "SOMZWCG12A8C13C480",
+  "title": "I Didn't Mean To",
+  "duration": 218.93179,
+  "year": 0
+}
+```
 
-log data in: etc.
+Log data:
+```
+> gunzip -c data/log_data/2018/11/2018-11-01-events.json.gz | jq --slurp '.[1]'
+{
+  "artist": null,
+  "auth": "Logged In",
+  "firstName": "Kaylee",
+  "gender": "F",
+  "itemInSession": 0,
+  "lastName": "Summers",
+  "length": null,
+  "level": "free",
+  "location": "Phoenix-Mesa-Scottsdale, AZ",
+  "method": "GET",
+  "page": "Home",
+  "registration": 1540344794796,
+  "sessionId": 139,
+  "song": null,
+  "status": 200,
+  "ts": 1541106106796,
+  "userAgent": "\"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36\"",
+  "userId": "8"
+}
+```
 
 ## Schema
 
@@ -74,7 +110,6 @@ Put schema in here.
 
 ## Pipeline
 
-gz.
 
 ## Example queries
 
