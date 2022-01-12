@@ -1,13 +1,5 @@
 # Schema for Song Play Analysis 
 
-<!--
-Notes:
-
-0. The readme file includes a summary of the project, how to run the python scripts, and an explanation of the files in the repository. Comments are used effectively and each function has a docstring.
-1. Discuss the purpose of this database in the context of the startup, Sparkify, and their analytical goals.
-3. Provide example queries and results for song play analysis.
--->
-
 This repo has python code and sql queries for a data pipeline that creates analytical database for song play analysis at Sparkify. Given data on songs and data on song plays logged from the service, this constructs a postgresql database with schema optimized for song play analysis. Analysis could include summary statistics for song plays by user type, time, artist, and location, among many other possibilities.
 
 ## Setup
@@ -42,8 +34,14 @@ Then install all python packages listed in `requirements.txt`:
 pip install -r requirements.txt
 ```
 
-### Run
+### Files
 
+* `data`: folder that contains song data (`song_data`) and log data (`log_data`) for ingestion into the database
+* `sql_queries.py`: SQL queries stored as Python strings for execution with `psycopg2` in the scripts `create_tables.py` and `etl.py`
+* `create_tables.py`: script to delete (if exists) and re-create `sparkifydb` database in PostgreSQL
+* `etl.py`: script to ingest all the data in `data` and insert into correct tables in `sparkifydb`
+
+### Run
 
 To create the database and insert the data into tables, run:
 ```
