@@ -109,44 +109,18 @@ Log data:
 
 The fact table is `songplays` (populated from files located in `data/log_data`, with columns `song_id` from `songs` table and `artist_id` from `artist` table)
 - `songplays` (fact table); columns: 
-  - `songplay_id`
-  - `start_time`
-  - `user_id`
-  - `level`
-  - `song_id`
-  - `artist_id`
-  - `session_id`
-  - `location`
-  - `user_agent`
+  - `songplay_id`,`start_time`,`user_id`,`level`,`song_id`,`artist_id`,`session_id`,`location`,`user_agent`
 
 The dimensions tables are populated with data from the song information in `data/song_data`. They include the following tables:
 
 - `users`: users in the app, with columns: 
-  - `user_id`
-  - `first_name`
-  - `last_name`
-  - `gender`
-  - `level`
+  - `user_id`,`first_name`,`last_name`,`gender`,`level`
 - `songs`: songs in the music database, with columns:
-  - `song_id`
-  - `title`
-  - `artist_id`
-  - `year`
-  - `duration`
+  - `song_id`,`title`,`artist_id`,`year`,`duration`
 - `artists`: artists in the music database, with columns:
-  - `artist_id`
-  - `name`
-  - `location`
-  - `latitude`
-  - `longitude`
+  - `artist_id`,`name`,`loction`,`latitude`,`longitude`
 - `time`: timestamps of records in `songplays` broken down into specific units
-  - `start_time`
-  - `hour`
-  - `day`
-  - `week`
-  - `month`
-  - `year`
-  - `weekday`
+  - `start_time`,`hour`,`day`,`week`,`month`,`year`,`weekday`
 
 This star schema was chosen to reduce redundency in the database; this reduces storage required as well as reducing the chance that errors are introduced because song and artist information can be updated in one table only. The presence of `level` in both the `songplays` table and `users` table represents the fact that level can change over time; `level` in `users` is the current subscription level (paid or free) of the user, but that may not reflect the subscription level the user had when they played the song. The schema trades-off the confusing nature of a database that is not completely normalized for the accuracy of historical subscription levels. This is important for analytical queries of streaming behaviour and will inform the direction of the business. In the future, the schema should be changed to reflect highlight the difference in `levels`, by, e.g., renaming `level` to `level_historical` in the `songplays` table, or `level_current` in the `users` table.
 
