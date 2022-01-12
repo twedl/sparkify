@@ -8,7 +8,6 @@ time_table_drop = "DROP DATABASE IF EXISTS time;"
 
 # CREATE TABLES
 
-# add PRIMARY KEY NOT NULL to the ids, and add ON CONFLICT things
 songplay_table_create = ("""CREATE TABLE IF NOT EXISTS songplays(
     songplay_id SERIAL PRIMARY KEY NOT NULL,
     start_time TIMESTAMP,
@@ -78,7 +77,6 @@ artist_table_insert = ("""INSERT INTO artists(
 """)
 
 
-# time here, might need to add the timestamp to the thing
 time_table_insert = ("""INSERT INTO time(
     start_time, hour, day, week, month, year, weekday)
     VALUES(%s, %s, %s, %s, %s, %s, %s) ON CONFLICT DO NOTHING;
