@@ -124,12 +124,14 @@ The dimensions tables are populated with data from the song information in `data
 
 This star schema was chosen to reduce redundency in the database; this reduces storage required as well as reducing the chance that errors are introduced because song and artist information can be updated in one table only. The presence of `level` in both the `songplays` table and `users` table represents the fact that level can change over time; `level` in `users` is the current subscription level (paid or free) of the user, but that may not reflect the subscription level the user had when they played the song. The schema trades-off the confusing nature of a database that is not completely normalized for the accuracy of historical subscription levels. This is important for analytical queries of streaming behaviour and will inform the direction of the business. In the future, the schema should be changed to reflect highlight the difference in `levels`, by, e.g., renaming `level` to `level_historical` in the `songplays` table, or `level_current` in the `users` table.
 
+Using the star schema may increase query time if every query requires joining the dimension tables to the fact tables to produce results. In this case, future schemas may include commonly required dimensions into the fact table itself. However, this increases the likelihood of errors introduced by updating dimensions in the dimension table but not the fact table, or vice versa.
+
 ## ETL Pipeline
 
 The pipeline: 
 
-1. Delete existing `sparkifydb`, if any
-2. Create `sparkifydb` with schema described above
+1. Delete existing `sparkifydb` database, if any
+2. Create `sparkifydb` database and tables `songplays`, `users`, `songs`, `artists`, and `time` with schema described above
 3. For each file in `data/song_data`:
   1. Read file into pandas dataframe
   2. Select song information and insert record into `songs` table
@@ -138,7 +140,8 @@ The pipeline:
   1. Read file into pandas dataframe
   2. Process: filter dataframe by page equal to "NextSong", convert time from milliseconds to timestamp
   3. Create dataframe of timestamps with specific time units and insert into `time` table
-  4. For each songplay record in the dataframe:
+  4. Create dataframe of users from logs, deduplicate and insert into `users` table (currently assumes the first entry in the log populates the user information, which may give rise to the subscription level problem described in the Schema section. 
+  5. For each songplay record in the dataframe:
     - use artist, song title and song length to query `songs` table to get `song_id`, and `artists` table to get `artist_id`
     - add `song_id` and `artist_id` to the record
     - insert record into `songplays` table
@@ -147,50 +150,25 @@ The pipeline:
 
 Top 5 songs by number of plays:
 ```
-SELECT COUNT(*) AS total_plays, songs.title, artists.name
+sparkifydb=> SELECT COUNT(*) AS total_plays, songplays.songplay_id, songs.title, artists.name
 FROM songplays
-INNER JOIN songs ON songplays.song_id = songs.song_id
-INNER JOIN artists ON songplays.artist_id = artists.artist_id
-GROUP BY song_id
+LEFT JOIN songs ON songplays.song_id = songs.song_id
+LEFT JOIN artists ON songplays.artist_id = artists.artist_id
+GROUP BY songplays.songplay_id, songs.title, artists.name
 ORDER BY total_plays DESC
 LIMIT 5
+ total_plays | songplay_id | title | name
+-------------+-------------+-------+------
+           1 |        2734 |       |
+           1 |        3066 |       |
+           1 |         733 |       |
+           1 |        6412 |       |
+           1 |        1279 |       |
+(5 rows)
 ```
+Each song in the log was only played once during this time period.
 
 <!--
-## 1.
-
-* business: music streaming. likely goals: time on app, mau, dau, market share, etc.
-* analytical goals: report to user; report to management; report to artists;
-    - e.g., sparkify wrapped; suggested next songs, artists, playlists, search
-    - to management: no. of users using, artists, songs played, popular things
-    - to artists: /// idk. which songs are beign played, etc.
-## 2.
-
-* Relational database, not document or nosql; for olap.
-* purpose: stats, analytical reports, top songs, artists; user behaviour;
-* prepare metrics to feed into models and back into app
-* considerations: query time, update time, storage, memory, integration
-* schema design: star; why? 
-    - bad: queries require more joins, possibly hard to incorporate more complex data (e.g., keep track of band members over time? idk. need a better example of this)
-    - good: for simple data structures, less repitition means less likely to screw up updates -- only need to update, e.g., user name in one place, not on users table *and also* songplays table
-    - example: level is on songplays table and also users table; level can change over time, so maybe historical songplays table records user on free level then switching to paid later; vs. users table that only has one unique level value at the current time
-
-## 3.
-
-Example queries for song play analysis. Simple: total estimated streaming time per user, sorted for top users; same for artists, or songs, etc.
-
-Top 50 songs by number of plays:
-```
-SELECT COUNT(*) AS total_plays, songs.title, artists.name
-FROM songplays
-INNER JOIN songs ON songplays.song_id = songs.song_id
-INNER JOIN artists ON songplays.artist_id = artists.artist_id
-GROUP BY song_id
-ORDER BY total_plays DESC
-LIMIT 50
-```
-********************* Not sure total_plays is available as a variable down here, use subquery
-maybe, or refer to COUNT(*) ****************
 Select top songs for a single user, or find latest song played:
 
 ``` 
