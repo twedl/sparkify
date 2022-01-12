@@ -1,11 +1,13 @@
 # Schema for Song Play Analysis 
 
+<!--
 Notes:
 
 0. The readme file includes a summary of the project, how to run the python scripts, and an explanation of the files in the repository. Comments are used effectively and each function has a docstring.
 1. Discuss the purpose of this database in the context of the startup, Sparkify, and their analytical goals.
 2. State and justify your database schema design and ETL pipeline.
 3. Provide example queries and results for song play analysis.
+-->
 
 This repo has python code and sql queries for a data pipeline that creates analytical database for song play analysis at Sparkify. Given data on songs and data on song plays logged from the service, this constructs a postgresql database with schema optimized for song play analysis. Analysis could include summary statistics for song plays by user type, time, artist, and location, among many other possibilities.
 
@@ -33,9 +35,10 @@ To set up the scripts, first clone the git repo:
 git clone git@github.com:twedl/sparkify.git
 cd sparkify
 ```
-Then activate a python virtual environment:
+Then create and activate a python virtual environment (for bash/zsh):
 ```
 python3 -m venv env 
+source env /bin/activate
 ```
 Then install all python packages listed in `requirements.txt`:
 ```
@@ -43,7 +46,11 @@ pip install -r requirements.txt
 ```
 
 ### Run
-then create_tables.py, then etl.py.
+
+To create the database and insert the data into tables, run:
+```
+python create_tables.py && python etl.py
+```
 
 ## Data
 
@@ -72,6 +79,7 @@ ORDER BY total_plays DESC
 LIMIT 50
 ```
 
+<!--
 ## 1.
 
 * business: music streaming. likely goals: time on app, mau, dau, market share, etc.
@@ -117,6 +125,6 @@ WHERE user_id = 'XYZ'
 ORDER BY start_time DESC
 LIMIT 1
 ```
-
+-->
 
 
