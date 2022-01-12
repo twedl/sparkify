@@ -7,24 +7,43 @@ Notes:
 2. State and justify your database schema design and ETL pipeline.
 3. Provide example queries and results for song play analysis.
 
-This is python/sql code for a data pipeline that creates analytical database for song play analysis at Sparkify. Given data on songs and data on song plays logged from the service, this constructs a postgresql database with schema optimized for song play analysis.
+This repo has python code and sql queries for a data pipeline that creates analytical database for song play analysis at Sparkify. Given data on songs and data on song plays logged from the service, this constructs a postgresql database with schema optimized for song play analysis. Analysis could include summary statistics for song plays by user type, time, artist, and location, among many other possibilities.
 
 ## Setup
 
 ### Prerequisites
 
-Postgresql, with default database studentdb, with user student / password student. Python 3. 
+PostgreSQL (tested on version 14.1 on MacOS 12.1), with default database studentdb, with user student / password student. To create this default, run:
 
-### Clone
+```
+createdb --host=127.0.0.1 --username=student --password studentdb
+```
+then type in the `student` in the password prompt. Test the connection by running
+```
+psql --host=127.0.0.1 --dbname=student --username=student --password
+```
+and type `student` in the password prompt again. You should see a message like `You are now connected to database "studentdb" as user "student" on host "127.0.0.1" at post "5432"`.
+
+### Install
 
 git clone, environment, pip install from requirements.txt.
 
+To set up the scripts, first clone the git repo:
+```
+git clone git@github.com:twedl/sparkify.git
+cd sparkify
+```
+Then activate a python virtual environment:
+```
+python3 -m venv env 
+```
+Then install all python packages listed in `requirements.txt`:
+```
+pip install -r requirements.txt
+```
+
 ### Run
 then create_tables.py, then etl.py.
-
-## Organization
-
-Queries in sql_queries.py, database creation / connection in create_tables.py.  data in data/
 
 ## Data
 
@@ -35,6 +54,10 @@ log data in: etc.
 ## Schema
 
 Put schema in here.
+
+## Pipeline
+
+gz.
 
 ## Example queries
 
