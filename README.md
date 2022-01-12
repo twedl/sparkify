@@ -47,9 +47,19 @@ pip install -r requirements.txt
 
 ### Run
 
+
 To create the database and insert the data into tables, run:
 ```
 python create_tables.py && python etl.py
+```
+
+Important:
+- the default database `studentdb` must exist with user/password `student/student`
+- `create_tables.py` drops any existing `sparkifydb` database and recreates it
+
+After running this, the `sparkifydb` database should exist with tables `songplays`, `users`, `songs`, `artists`, and `time`. To see and test the database in PostgreSQL, connect to it by running:
+```
+psql --host=127.0.0.1 --dbname=sparkifydb --username=student --password
 ```
 
 ## Data
