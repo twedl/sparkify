@@ -156,7 +156,7 @@ LEFT JOIN songs ON songplays.song_id = songs.song_id
 LEFT JOIN artists ON songplays.artist_id = artists.artist_id
 GROUP BY songplays.songplay_id, songs.title, artists.name
 ORDER BY total_plays DESC
-LIMIT 5
+LIMIT 5;
  total_plays | songplay_id | title | name
 -------------+-------------+-------+------
            1 |        2734 |       |
@@ -168,18 +168,39 @@ LIMIT 5
 ```
 Each song in the log was only played once during this time period.
 
-<!--
-Select top songs for a single user, or find latest song played:
-
-``` 
-SELECT start_time, user_id, songs.title, artists.name
-FROM songplays
-INNER JOIN songs ON songplays.song_id = songs.song_id
-INNER JOIN artsts ON songplays.artist_id = artists.artist_id
-WHERE user_id = 'XYZ'
-ORDER BY start_time DESC
-LIMIT 1
+Number of plays per hour of the day:
 ```
--->
-
-
+sparkifydb=> SELECT count(*) as count, time.hour
+FROM songplays
+INNER JOIN time ON songplays.start_time = time.start_time
+GROUP BY time.hour
+ORDER BY time.hour;
+ count | hour
+-------+------
+   155 |    0
+   154 |    1
+   117 |    2
+   109 |    3
+   136 |    4
+   162 |    5
+   183 |    6
+   179 |    7
+   207 |    8
+   270 |    9
+   312 |   10
+   336 |   11
+   308 |   12
+   324 |   13
+   432 |   14
+   477 |   15
+   542 |   16
+   494 |   17
+   498 |   18
+   367 |   19
+   360 |   20
+   280 |   21
+   217 |   22
+   201 |   23
+(24 rows)
+```
+Song plays drop overnight and peak at hour 16 / 4:00pm.
