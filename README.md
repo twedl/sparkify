@@ -5,7 +5,6 @@ Notes:
 
 0. The readme file includes a summary of the project, how to run the python scripts, and an explanation of the files in the repository. Comments are used effectively and each function has a docstring.
 1. Discuss the purpose of this database in the context of the startup, Sparkify, and their analytical goals.
-2. State and justify your database schema design and ETL pipeline.
 3. Provide example queries and results for song play analysis.
 -->
 
@@ -106,9 +105,54 @@ Log data:
 
 ## Schema
 
-Put schema in here.
+`sparkifydb` uses a star schema optimized for song play analytical queries. It includes the following tables (fact table populated from files located in `data/log_data`, dimension tables populated with information in `data/song_data`):
+
+The fact table is `songplays` (populated from files located in `data/log_data`, with columns `song_id` from `songs` table and `artist_id` from `artist` table)
+- `songplays` (fact table); columns: 
+  - `songplay_id`
+  - `start_time`
+  - `user_id`
+  - `level`
+  - `song_id`
+  - `artist_id`
+  - `session_id`
+  - `location`
+  - `user_agent`
+
+The dimensions tables are populated with data from the song information in `data/song_data`. They include the following tables:
+
+- `users`: users in the app, with columns: 
+  - `user_id`
+  - `first_name`
+  - `last_name`
+  - `gender`
+  - `level`
+- `songs`: songs in the music database, with columns:
+  - `song_id`
+  - `title`
+  - `artist_id`
+  - `year`
+  - `duration`
+- `artists`: artists in the music database, with columns:
+  - `artist_id`
+  - `name`
+  - `location`
+  - `latitude`
+  - `longitude`
+- `time`: timestamps of records in `songplays` broken down into specific units
+  - `start_time`
+  - `hour`
+  - `day`
+  - `week`
+  - `month`
+  - `year`
+  - `weekday`
 
 ## Pipeline
+
+Delete existing sparkifydb. Create sparkifydb with fact and all dimension tables.
+
+Unzip and load all song data files. Then unzip and load log files. For each songplay in the log file, look up the correct song_id and artist_id from the existing dimension tables (users, artists), and add them to the songplays table.
 
 
 ## Example queries
