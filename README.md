@@ -148,16 +148,30 @@ The dimensions tables are populated with data from the song information in `data
   - `year`
   - `weekday`
 
-## Pipeline
+This star schema was chosen to reduce redundency in the database; this reduces storage required as well as reducing the chance that errors are introduced because song and artist information can be updated in one table only. The presence of `level` in both the `songplays` table and `users` table represents the fact that level can change over time; `level` in `users` is the current subscription level (paid or free) of the user, but that may not reflect the subscription level the user had when they played the song. The schema trades-off the confusing nature of a database that is not completely normalized for the accuracy of historical subscription levels. This is important for analytical queries of streaming behaviour and will inform the direction of the business. In the future, the schema should be changed to reflect highlight the difference in `levels`, by, e.g., renaming `level` to `level_historical` in the `songplays` table, or `level_current` in the `users` table.
 
-Delete existing sparkifydb. Create sparkifydb with fact and all dimension tables.
+## ETL Pipeline
 
-Unzip and load all song data files. Then unzip and load log files. For each songplay in the log file, look up the correct song_id and artist_id from the existing dimension tables (users, artists), and add them to the songplays table.
+The pipeline: 
 
+1. Delete existing `sparkifydb`, if any
+2. Create `sparkifydb` with schema described above
+3. For each file in `data/song_data`:
+  1. Read file into pandas dataframe
+  2. Select song information and insert record into `songs` table
+  3. Select artist information and insert record into `artists` table
+4. For each file in `data/log_data`:
+  1. Read file into pandas dataframe
+  2. Process: filter dataframe by page equal to "NextSong", convert time from milliseconds to timestamp
+  3. Create dataframe of timestamps with specific time units and insert into `time` table
+  4. For each songplay record in the dataframe:
+    - use artist, song title and song length to query `songs` table to get `song_id`, and `artists` table to get `artist_id`
+    - add `song_id` and `artist_id` to the record
+    - insert record into `songplays` table
 
 ## Example queries
 
-Top 50 songs by number of plays:
+Top 5 songs by number of plays:
 ```
 SELECT COUNT(*) AS total_plays, songs.title, artists.name
 FROM songplays
@@ -165,7 +179,7 @@ INNER JOIN songs ON songplays.song_id = songs.song_id
 INNER JOIN artists ON songplays.artist_id = artists.artist_id
 GROUP BY song_id
 ORDER BY total_plays DESC
-LIMIT 50
+LIMIT 5
 ```
 
 <!--

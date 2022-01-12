@@ -1,13 +1,8 @@
 import os
 import glob
-from typing_extensions import TypeAlias
 import psycopg2
-from psycopg2.extensions import register_adapter, AsIs
 import pandas as pd 
-import numpy as np
 from sql_queries import *
-
-psycopg2.extensions.register_adapter(np.int64, psycopg2._psycopg.AsIs)
 
 def process_song_file(cur, filepath):
     """
@@ -52,13 +47,13 @@ def process_log_file(cur, filepath):
     for i, row in user_df.iterrows():
         cur.execute(user_table_insert, row)
 
-    # fix timestamp in df for insertion into songplays database
+    # convert timestamp in df from milliseconds to timestamp for insertion into songplays database
     df["ts"] = t
 
     # insert songplay records
     for index, row in df.iterrows():
         # get songid and artistid from song and artist tables
-        cur.execute(song_select, (row.song, row.artist, row.length)) # none of these songs are found yet; also length is bad
+        cur.execute(song_select, (row.song, row.artist, row.length)) 
         results = cur.fetchone()
 
         if results:
@@ -68,7 +63,9 @@ def process_log_file(cur, filepath):
         
 
         # insert songplay record
-        songplay_data = tuple(row[["ts", "userId", "level"]]) + (song_id, artist_id) + tuple(row[["sessionId", "location", "userAgent"]])
+        songplay_data = tuple(row[["ts", "userId", "level"]]) + \
+            (song_id, artist_id) + \
+            tuple(row[["sessionId", "location", "userAgent"]])
         cur.execute(songplay_table_insert, songplay_data)
 
 
