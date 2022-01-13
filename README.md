@@ -138,7 +138,7 @@ The pipeline:
   1. Read file into pandas dataframe
   2. Process: filter dataframe by page equal to "NextSong", convert time from milliseconds to timestamp
   3. Create dataframe of timestamps with specific time units and insert into `time` table
-  4. Create dataframe of users from logs, deduplicate and insert into `users` table (currently assumes the first entry in the log populates the user information, which may give rise to the subscription level problem described in the Schema section. 
+  4. Create dataframe of users from logs, deduplicate and insert into `users` table (updating `level` if there is a conflict with a previous record)
   5. For each songplay record in the dataframe:
     - use artist, song title and song length to query `songs` table to get `song_id`, and `artists` table to get `artist_id`
     - add `song_id` and `artist_id` to the record
