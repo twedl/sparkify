@@ -5,6 +5,11 @@ def create_database():
     """
     - Creates and connects to the sparkifydb
     - Returns the connection and cursor to sparkifydb
+
+    INPUTS:
+        - None
+    OUTPUTS:
+        - (cur, conn): a tuple containing the database cursor and connection
     """
     
     # connect to default database
@@ -28,6 +33,10 @@ def create_database():
 def drop_tables(cur, conn):
     """
     Drops each table using the queries in `drop_table_queries` list.
+
+    INPUTS:
+        - cur: psycopg2 database cursor 
+        - conn: psycopg2 database connection
     """
     for query in drop_table_queries:
         cur.execute(query)
@@ -37,6 +46,10 @@ def drop_tables(cur, conn):
 def create_tables(cur, conn):
     """
     Creates each table using the queries in `create_table_queries` list. 
+
+    INPUTS:
+        - cur: psycopg2 database cursor 
+        - conn: psycopg2 database connection
     """
     for query in create_table_queries:
         cur.execute(query)
