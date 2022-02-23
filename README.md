@@ -148,23 +148,14 @@ The pipeline:
 
 Top 5 songs by number of plays:
 ```
-sparkifydb=> SELECT COUNT(*) AS total_plays, songplays.songplay_id, songs.title, artists.name
+sparkifydb=> SELECT COUNT(*) AS total_plays, songs.title, artists.name
 FROM songplays
 LEFT JOIN songs ON songplays.song_id = songs.song_id
 LEFT JOIN artists ON songplays.artist_id = artists.artist_id
-GROUP BY songplays.songplay_id, songs.title, artists.name
+GROUP BY songs.title, artists.name
 ORDER BY total_plays DESC
 LIMIT 5;
- total_plays | songplay_id | title | name
--------------+-------------+-------+------
-           1 |        2734 |       |
-           1 |        3066 |       |
-           1 |         733 |       |
-           1 |        6412 |       |
-           1 |        1279 |       |
-(5 rows)
 ```
-Each song in the log was only played once during this time period.
 
 Number of plays per hour of the day:
 ```
@@ -173,32 +164,4 @@ FROM songplays
 INNER JOIN time ON songplays.start_time = time.start_time
 GROUP BY time.hour
 ORDER BY time.hour;
- count | hour
--------+------
-   155 |    0
-   154 |    1
-   117 |    2
-   109 |    3
-   136 |    4
-   162 |    5
-   183 |    6
-   179 |    7
-   207 |    8
-   270 |    9
-   312 |   10
-   336 |   11
-   308 |   12
-   324 |   13
-   432 |   14
-   477 |   15
-   542 |   16
-   494 |   17
-   498 |   18
-   367 |   19
-   360 |   20
-   280 |   21
-   217 |   22
-   201 |   23
-(24 rows)
 ```
-Song plays drop overnight and peak at hour 16 / 4:00pm.
